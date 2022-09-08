@@ -1,0 +1,93 @@
+name: 'Docker Sync Action'
+description: 'Keeps docker images in sync between registries or repositories'
+author: 'Pavel Titenkov'
+
+branding:
+  icon: 'package'
+  color: 'blue'
+
+inputs:
+  source:
+    description: source image repository
+    required: true
+  destination:
+    description: destination image repository
+    required: true
+  source-transport:
+    description: source transport type (containers-storage,dir,docker,docker-archive,docker-daemon,oci,oci-archive,ostree,tarball)
+    required: false
+    default: docker
+  destination-transport:
+    description: destination transport type (containers-storage,dir,docker,docker-archive,docker-daemon,oci,oci-archive,ostree,tarball)
+    required: false
+    default: docker
+  source-credentials:
+    description: source credentials
+    required: false
+    default: 'null'
+  destination-credentials:
+    description: destination credentials
+    required: false
+    default: 'null'
+  source-tls:
+    description: require HTTPS and verify certificates when talking to the container registry or daemon
+    required: false
+    default: 'false'
+  destination-tls:
+    description: require HTTPS and verify certificates when talking to the container registry or daemon
+    required: false
+    default: 'false'
+  format:
+    description: MANIFEST TYPE (oci, v2s1, or v2s2) to use in the destination (default is manifest type of source, with fallbacks)
+    required: false
+    default: v2s2
+runs:
+  using: composite
+  steps:
+  - id: sync
+    run: |
+      echo -e "${PURPLE}> 🚜 Syncing docker images ${BLANK}"
+      echo -e "${YELLOW}> Using skopeo version: ${BLANK}"
+      skopeo --version
+
+      if [ "${{ inputs.source-transport }}" = "dir" ]; then
+        SOURCE_DELIMITER=":/"
+      elif [ "${{ inputs.source-transport }}" = "docker" ]; then
+        SOURCE_DELIMITER="://"
+      else
+        SOURCE_DELIMITER=":"
+      fi
+
+      if [ "${{ inputs.destination-transport }}" = "dir" ]; then
+        DESTINATION_DELIMITER=":/"
+      elif [ "${{ inputs.destination-transport }}" = "docker" ]; then
+        DESTINATION_DELIMITER="://"
+      else
+        DESTINATION_DELIMITER=":"
+      fi
+
+      echo -e "${YELLOW}> 🐳 Docker source repository ${BLANK}"
+      skopeo inspect ${{ inputs.source-transport }}${SOURCE_DELIMITER}${{ inputs.source }} --tls-verify=${{ inputs.source-tls }} --creds=${{ inputs.source-credentials }}
+
+      echo -e "${YELLOW}> 📦 Transfer docker images from ${{ inputs.source }} to ${{ inputs.destination }} ${BLANK}"
+
+      skopeo sync --format ${{ inputs.format }} \
+                  --src=${{ inputs.source-transport }} \
+                  --src-tls-verify=${{ inputs.source-tls }} \
+                  --src-creds=${{ inputs.source-credentials }} \
+                  --dest=${{ inputs.destination-transport }} \
+                  --dest-tls-verify=${{ inputs.destination-tls }} \
+                  --dest-creds=${{ inputs.destination-credentials }} \
+                  ${{ inputs.source }} \
+                  ${{ inputs.destination }}
+
+      echo -e "${YELLOW}> ✅ Sync is complete. See details above ${BLANK}"
+    shell: bash
+    env:
+      RED: \033[1;31m
+      GREEN: \033[1;32m
+      YELLOW: \033[1;33m
+      BLUE: \033[1;34m
+      PURPLE: \033[1;35m
+      CYAN: \033[1;36m
+      BLANK: \033[0m

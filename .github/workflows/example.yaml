@@ -1,0 +1,32 @@
+name: Sync Docker Images
+on: 
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Source repository'     
+        required: true
+        default: 'titenkov/notifir'
+      source-credentials:
+        description: 'Source credentials'     
+        required: false
+        default: 'null'
+      destination:
+        description: 'Destination repository'
+        required: true
+        default: 'ghcr.io/notifir'
+      destination-credentials:
+        description: 'Destination credentials'
+        required: false
+        default: 'null'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Sync Docker Images
+      uses: titenkov/docker-sync-action@main
+      with:
+        source: ${{ github.event.inputs.source }}
+        source-credentials: ${{ github.event.inputs.source-credentials }}
+        destination: ${{ github.event.inputs.destination }}
+        destination-credentials: ${{ github.event.inputs.destination-credentials }}
