@@ -4,7 +4,7 @@
 
 This github action syncs your docker images across registries 🤹‍♀️
 
-Schedule an automatic workflow, which will ensure that docker images from different registries (or repositories) are in sync.
+Schedule an automatic workflow, which will ensure that docker images from different registries (or repositories) are in sync. This github action is using [Skopeo](https://github.com/containers/skopeo) command line utility under the hood.
 
 ```yaml
 - uses: titenkov/docker-sync-action@v1
@@ -40,7 +40,7 @@ jobs:
           destination-credentials: titenkov:${{ secrets.GH_TOKEN }}
 ```
 
-In the example the action will take all the images from `titenkov/notifir` repository and sync them to `ghcr.io/notifir`.
+In the example, the action will take all the images from `titenkov/notifir` repository and sync them to `ghcr.io/notifir`.
 
 ## Action inputs
 
@@ -53,11 +53,11 @@ Supported transport types: `containers-storage`, `dir`, `docker`, `docker-archiv
 | `source-credentials`      | Your source credentials (`user:password`)                                                                         | false    | 'null'   |
 | `source-tls`              | Require HTTPS and verify certificates when talking to container registry or daemon                                | false    | 'false'  |
 | `destination`             | Your destination image repository                                                                                 | true     | -        |
-| `destination-transport`   | Your destination transport type                                                                                   | true     | 'docker' |
+| `destination-transport`   | Your destination transport type                                                                                   | false    | 'docker' |
 | `destination-credentials` | Your destination credentials (`user:password`)                                                                    | false    | 'null'   |
 | `destination-tls`         | Require HTTPS and verify certificates when talking to container registry or daemon                                | false    | 'false'  |
 | `format `                 | MANIFEST TYPE (oci, v2s1, or v2s2) to use in the destination (default is manifest type of source, with fallbacks) | false    | 'v2s2'   |
 
 ## Contact
 
-I would love to hear your feedback! Tell me what you loved and what you want to improve about this action at feedback@titenkov.com, or feel free to open a Github Issue.<br />
+I would love to hear your feedback! Tell me what you loved and what you want to improve about this action at ✉️ feedback@titenkov.com, or feel free to open a Github Issue.<br />
