@@ -1,6 +1,7 @@
 # 🐳 Docker Sync Action
 
-[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-v3-undefined.svg?logo=github&logoColor=white&style=flat)](https://github.com/marketplace/actions/docker-sync-action)
+[![license](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
+[![market](https://img.shields.io/badge/Get_it-on_the_Marketplace-informational.svg)](https://github.com/marketplace/actions/docker-sync-action)
 
 This github action syncs your docker images across registries 🤹‍♀️
 
@@ -23,7 +24,7 @@ name: Sync Docker Images
 
 on:
   schedule:
-    - cron: "0 * * * *" # Run every hour
+    - cron: "0 0 * * *" # Run every day
 
 jobs:
   sync:
