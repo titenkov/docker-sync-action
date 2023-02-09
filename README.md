@@ -43,6 +43,21 @@ jobs:
 
 In the example, the action will take all the images from `titenkov/notifir` repository and sync them to `ghcr.io/notifir`.
 
+Another example for the case, when you want to sync only specific tags:
+
+```yaml
+  - name: Sync docker images
+    uses: titenkov/docker-sync-action@v1
+    with:
+      source: titenkov/notifir
+      destination: ghcr.io/notifir/notifir
+      destination-credentials: titenkov:${{ secrets.GH_TOKEN }}
+      versions: |
+        0.1.9
+        0.1.10
+        latest
+```
+
 ## Action inputs
 
 Supported transport types: `containers-storage`, `dir`, `docker`, `docker-archive`, `docker-daemon`, `oci`, `oci-archive`, `ostree`, `tarball`.
@@ -58,6 +73,7 @@ Supported transport types: `containers-storage`, `dir`, `docker`, `docker-archiv
 | `destination-credentials` | Your destination credentials (`user:password`)                                                                    | false    | 'null'   |
 | `destination-tls`         | Require HTTPS and verify certificates when talking to container registry or daemon                                | false    | 'false'  |
 | `format `                 | MANIFEST TYPE (oci, v2s1, or v2s2) to use in the destination (default is manifest type of source, with fallbacks) | false    | 'v2s2'   |
+| `versions `               | Your docker image tags to sync (multi-line)                                                                       | false    | ''       |
 
 ## Contact
 

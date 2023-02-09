@@ -42,7 +42,7 @@ inputs:
     required: false
     default: v2s2
   versions:
-    description: docker image tags to sync
+    description: docker image tags to sync (multi-line)
     required: false
     default: ''
 runs:
