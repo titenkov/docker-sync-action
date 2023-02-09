@@ -90,6 +90,11 @@ runs:
       else
 
         echo "${{ inputs.versions }}" | while read version ; do
+
+          if [ "$version" = "" ]; then
+            break
+          fi
+
           echo -e "${YELLOW}> 📦 Transfer tag $version"
 
           skopeo copy --format ${{ inputs.format }} \
