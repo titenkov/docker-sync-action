@@ -41,6 +41,10 @@ inputs:
     description: MANIFEST TYPE (oci, v2s1, or v2s2) to use in the destination (default is manifest type of source, with fallbacks)
     required: false
     default: v2s2
+  versions:
+    description: docker image tags to sync
+    required: false
+    default: ''
 runs:
   using: composite
   steps:
@@ -71,7 +75,9 @@ runs:
 
       echo -e "${YELLOW}> 📦 Transfer docker images from ${{ inputs.source }} to ${{ inputs.destination }} ${BLANK}"
 
-      skopeo sync --format ${{ inputs.format }} \
+      if [ "${{ inputs.versions }}" = "" ]; then
+
+        skopeo sync --format ${{ inputs.format }} \
                   --src=${{ inputs.source-transport }} \
                   --src-tls-verify=${{ inputs.source-tls }} \
                   --src-creds=${{ inputs.source-credentials }} \
@@ -80,6 +86,23 @@ runs:
                   --dest-creds=${{ inputs.destination-credentials }} \
                   ${{ inputs.source }} \
                   ${{ inputs.destination }}
+
+      else
+
+        echo "${{ inputs.versions }}" | while read version ; do
+          echo -e "${YELLOW}> 📦 Transfer tag $version"
+
+          skopeo copy --format ${{ inputs.format }} \
+                  --src-tls-verify=${{ inputs.source-tls }} \
+                  --src-creds=${{ inputs.source-credentials }} \
+                  --dest-tls-verify=${{ inputs.destination-tls }} \
+                  --dest-creds=${{ inputs.destination-credentials }} \
+                  ${{ inputs.source-transport }}${SOURCE_DELIMITER}${{ inputs.source }}:$version \
+                  ${{ inputs.destination-transport }}${DESTINATION_DELIMITER}${{ inputs.destination }}:$version
+
+        done
+
+      fi
 
       echo -e "${YELLOW}> ✅ Sync is complete. See details above ${BLANK}"
     shell: bash

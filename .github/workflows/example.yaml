@@ -18,6 +18,10 @@ on:
         description: 'Destination credentials'
         required: false
         default: 'null'
+      versions:
+        description: 'Versions'
+        required: false
+        default: ''
 
 jobs:
   sync:
@@ -30,3 +34,4 @@ jobs:
         source-credentials: ${{ github.event.inputs.source-credentials }}
         destination: ${{ github.event.inputs.destination }}
         destination-credentials: ${{ github.event.inputs.destination-credentials }}
+        versions: ${{ github.event.inputs.versions }}
